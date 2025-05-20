@@ -2,6 +2,7 @@ const express = require('express');
 require("dotenv").config();
 const logger = require("./src/logger/logger");
 const mongoose = require("mongoose");
+const routes = require("./src/routes/index");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
@@ -16,11 +17,14 @@ if (!process.env.DATABASE_URL || !process.env.PORT) {
 
   app.use(bodyParser.json());
 
+  app.use(cors({ credentials: true }));
+
   app.use((err, req, res, next) => {
     logger.error(err.stack);
     res.status(err.statusCode || 500).send({ error: err.message });
   });
 
+  app.use(process.env.VERSION, routes);
 
   mongoose.set("strictQuery", false);
   mongoose.connect(process.env.DATABASE_URL);
