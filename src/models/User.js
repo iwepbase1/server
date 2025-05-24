@@ -3,15 +3,6 @@ const AutoIncrement = require("mongoose-sequence")(mongoose);
 
 const UserSchema = new mongoose.Schema(
   {
-    id: {
-      type: Number,
-      required: true,
-    },
-    password: {
-      type: String,
-      required: false,
-      trim: true,
-    },
     fullName: {
       type: String,
       required: true,
@@ -44,12 +35,14 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    onBoardingCompleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
   }
 );
-
-UserSchema.plugin(AutoIncrement, { inc_field: "id" });
 
 module.exports = mongoose.model("User", UserSchema);

@@ -20,15 +20,15 @@ const register = errorHandler(
       role: req.body.role,
       city: req.body.city,
       country: req.body.country,
-      password: await argon2.hash(passwrd),
     });
+    const jwt = createJwt(user._id);
 
     await user.save({ session });
 
     const sanitizedUserData = user.toObject();
-    delete sanitizedUserData.password;
 
     return {
+      jwt,
       user: sanitizedUserData,
     };
   })
@@ -37,10 +37,8 @@ const register = errorHandler(
 const auth = errorHandler(
   withTransaction(async (req, res, session) => {
     const userData = await User.findOne({ email: req.body.email });
-
     if (!userData) {
       return {
-        jwt,
         isNewUser: true,
       };
     } else {
@@ -52,10 +50,9 @@ const auth = errorHandler(
 
       await refreshTokenDoc.save({ session });
 
-      const jwt = createJwt(userData.id);
+      const jwt = createJwt(userData._id);
 
       const sanitizedUserData = userData.toObject();
-      delete sanitizedUserData.password;
 
       return {
         jwt,
@@ -64,6 +61,11 @@ const auth = errorHandler(
     }
   })
 );
+
+function createJwt(id) {
+  return jwt.sign({ id }, process.env.TOKEN_KEY);
+  
+}
 
 module.exports = {
   register,

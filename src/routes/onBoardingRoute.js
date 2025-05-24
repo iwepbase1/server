@@ -5,8 +5,10 @@ const controllers = require("../controllers");
 
 const router = express.Router();
 
-router.post("/auth", controllers.auth.auth);
-
-router.post("/register", controllers.auth.register);
+router.post(
+  "/onboarding",
+  middlewares.verifyAccessToken,
+  controllers.onBoarding.onBoarding
+);
 
 module.exports = router;
