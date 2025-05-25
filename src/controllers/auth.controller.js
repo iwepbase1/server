@@ -29,7 +29,7 @@ const register = errorHandler(
 
     return {
       jwt,
-      user: sanitizedUserData,
+      userData: sanitizedUserData,
     };
   })
 );

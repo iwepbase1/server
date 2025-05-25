@@ -17,14 +17,14 @@ const onBoarding = errorHandler(
       submittedAt: new Date(),
     });
 
+    await User.updateOne({ email : req.body.email }, { $set: {onBoardingCompleted : true} });
+
     await form.save({ session });
     
-    await User.updateOne({ email }, { $set: {onBoardingCompleted : true} });
-
     const sanitizedUserData = form.toObject();
 
     return {
-      user: sanitizedUserData,
+      form: sanitizedUserData,
     };
   })
 );
